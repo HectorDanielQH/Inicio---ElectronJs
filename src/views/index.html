@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/lux/bootstrap.min.css">
+</head>
+<body>
+    <div class="container p-4">
+        <div class="row" id="products">
+
+        </div>
+    </div>
+
+    <script>
+        const {ipcRenderer} =require('electron');
+        const products = document.querySelector('#products');
+        ipcRenderer.on('product:new',(e,newProdut)=>{
+            const newProductTemplate=`
+                <div class="col-xs-4 p-2">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            <h5 class="card-title">${newProdut.nameProduct}</h5>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${newProdut.priceProduct}</h5>
+                            <p class="card-text">${newProdut.descriptionProduct}</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            products.innerHTML+=newProductTemplate;
+            const btns=document.querySelectorAll('.btn.btn-danger');
+            btns.forEach(btn=>{
+                btn.addEventListener('click',e=>{
+                    e.target.parentElement.parentElement.remove();
+                });
+            });
+        });
+        ipcRenderer.on('product:removeAll',(e)=>{
+            products.innerHTML='';
+        });
+    </script>
+</body>
+</html>
